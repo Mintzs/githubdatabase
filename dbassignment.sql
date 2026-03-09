@@ -199,3 +199,8 @@ SELECT * FROM Pull_Requests;
 SELECT * FROM Comments;
 
 
+-----=== QUERIES ===-----
+
+--1
+SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repositories ON Users.user_id = Repositories.owner_user_id
+-- Joins the Users and Repositories tables. Retrieves the username of users and the names of repositories they own. The join condition matches each repository to the user who owns it.
