@@ -19,6 +19,6 @@ The database consists of the following tables:
 | `Teams` | Subgroups within an organization |
 | `Repositories` | Code repositories owned by a user or organization |
 | `Branches` | Named branches within a repository |
-| `Commits` | Individual code snapshots (identified by SHA hash) |
+| `Commits` | Individual code snapshots |
 | `Pull_Requests` | Proposals to merge one branch into another |
 | `Comment` | Weak entity for comments on pull requests or commits |
