@@ -97,7 +97,7 @@ FOREIGN KEY(source_branch_id) REFERENCES Branches(branch_id),
 FOREIGN KEY(target_branch_id) REFERENCES Branches(branch_id),
 FOREIGN KEY(creator_id) REFERENCES Users(user_id));
 
-CREATE TABLE Comment( -- weak entity reliant on pr_id or commit_id --
+CREATE TABLE Comments( -- weak entity reliant on pr_id or commit_id --
 comment_id INTEGER,
 content TEXT,
 author_id,
@@ -178,11 +178,11 @@ INSERT INTO Pull_Requests VALUES (4, 'Improve data pipeline',  NULL,            
 INSERT INTO Pull_Requests VALUES (5, 'Fix documentation typo', NULL,                             'closed', 2, 1, 4);
 
 -- Comments
-INSERT INTO Comment VALUES (1, 'LGTM, great implementation!',   1, 1,    NULL,       '2024-01-17T10:00:00');
-INSERT INTO Comment VALUES (2, 'Needs more unit tests',         2, 2,    NULL,       '2024-01-28T14:00:00');
-INSERT INTO Comment VALUES (3, 'ResNet looks good to me',       1, 3,    NULL,       '2024-02-12T09:00:00');
-INSERT INTO Comment VALUES (4, 'Initial commit looks clean',    2, NULL, 'a1b2c3d4', '2024-01-11T10:00:00');
-INSERT INTO Comment VALUES (5, 'Please add more documentation', 3, 4,    NULL,       '2024-03-06T11:00:00');
+INSERT INTO Comments VALUES (1, 'LGTM, great implementation!',   1, 1,    NULL,       '2024-01-17T10:00:00');
+INSERT INTO Comments VALUES (2, 'Needs more unit tests',         2, 2,    NULL,       '2024-01-28T14:00:00');
+INSERT INTO Comments VALUES (3, 'ResNet looks good to me',       1, 3,    NULL,       '2024-02-12T09:00:00');
+INSERT INTO Comments VALUES (4, 'Initial commit looks clean',    2, NULL, 'a1b2c3d4', '2024-01-11T10:00:00');
+INSERT INTO Comments VALUES (5, 'Please add more documentation', 3, 4,    NULL,       '2024-03-06T11:00:00');
 
 
 -- View all tables --
@@ -196,4 +196,5 @@ SELECT * FROM Repositories;
 SELECT * FROM Branches;
 SELECT * FROM Commits;
 SELECT * FROM Pull_Requests;
-SELECT * FROM Comment;
+SELECT * FROM Comments;
+
