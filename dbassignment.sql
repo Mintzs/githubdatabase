@@ -123,10 +123,10 @@ INSERT INTO Accounts VALUES (8, 'organization');
 
 -- Users (user_id matches account_id)
 INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL',    'active');
-INSERT INTO Users VALUES (2, 'janek',  'alice@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', 'active');
-INSERT INTO Users VALUES (3, 'ceco',    'bob@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', 'active');
-INSERT INTO Users VALUES (4, 'travis',  'carol@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   'active');
-INSERT INTO Users VALUES (5, 'mara',   'dave@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  'suspended');
+INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', 'active');
+INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', 'active');
+INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   'active');
+INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  'suspended');
 
 -- Organizations (org_id matches account_id, starting from 6)
 INSERT INTO Organizations VALUES (6, 'promptshop', 'AI start up',  'Amsterdam, NL');
@@ -197,4 +197,5 @@ SELECT * FROM Branches;
 SELECT * FROM Commits;
 SELECT * FROM Pull_Requests;
 SELECT * FROM Comments;
+
 
