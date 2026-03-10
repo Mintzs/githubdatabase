@@ -202,6 +202,9 @@ SELECT * FROM Comments;
 -----=== QUERIES ===-----
 
 --1
-SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repositories ON Users.user_id = Repositories.owner_user_id
--- Outputs each user’s name and the repositories they own
+SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repositories ON Users.user_id = Repositories.owner_user_id;
+-- Outputs each user’s name and the repositories they own.
 
+--2
+SELECT org_id, COUNT(user_id) AS member_count FROM Membership GROUP BY org_id HAVING COUNT(user_id) > 1;
+-- Outputs IDs of organizations with more than one member. Shows total number of members in each organization as well.
