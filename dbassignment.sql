@@ -45,8 +45,8 @@ joined_at TEXT NOT NULL,
 user_id,
 org_id,
 PRIMARY KEY(membership_id),
-FOREIGN KEY(user_id) REFERENCES Users(user_id),
-FOREIGN KEY(org_id) REFERENCES Organizations(org_id));
+FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE, 
+FOREIGN KEY(org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
 
 CREATE TABLE Teams( -- subgroup of organizations -- 
 team_id INTEGER,
@@ -54,7 +54,7 @@ name TEXT,
 description TEXT,
 org_id,
 PRIMARY KEY(team_id),
-FOREIGN KEY(org_id) REFERENCES Organizations(org_id));
+FOREIGN KEY(org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
 
 CREATE TABLE Repositories(
 repo_id INTEGER,
@@ -64,15 +64,15 @@ visibility TEXT NOT NULL,
 owner_user_id,
 owner_org_id,
 PRIMARY KEY(repo_id),
-FOREIGN KEY(owner_user_id) REFERENCES Users(user_id),
-FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id));
+FOREIGN KEY(owner_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
 
 CREATE TABLE Branches(
 branch_id INTEGER,
 name TEXT NOT NULL,
 repo_id,
 PRIMARY KEY(branch_id),
-FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id));
+FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id) ON DELETE CASCADE);
 
 CREATE TABLE Commits(
 commit_id TEXT,
@@ -81,8 +81,8 @@ author_id,
 message TEXT NOT NULL,
 timestamp,
 PRIMARY KEY(commit_id),
-FOREIGN KEY(branch_id) REFERENCES Branches(branch_id),
-FOREIGN KEY(author_id) REFERENCES Users(user_id));
+FOREIGN KEY(branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
+FOREIGN KEY(author_id) REFERENCES Users(user_id) ON DELETE SET NULL);
 
 CREATE TABLE Pull_requests(
 pr_id INTEGER,
@@ -93,9 +93,9 @@ source_branch_id,
 target_branch_id,
 creator_id,
 PRIMARY KEY(pr_id),
-FOREIGN KEY(source_branch_id) REFERENCES Branches(branch_id),
-FOREIGN KEY(target_branch_id) REFERENCES Branches(branch_id),
-FOREIGN KEY(creator_id) REFERENCES Users(user_id));
+FOREIGN KEY(source_branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
+FOREIGN KEY(target_branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
+FOREIGN KEY(creator_id) REFERENCES Users(user_id) ON DELETE SET NULL);
 
 CREATE TABLE Comments( -- weak entity reliant on pr_id or commit_id --
 comment_id INTEGER,
@@ -105,9 +105,9 @@ pr_id,
 commit_id,
 timestamp TEXT NOT NULL,
 PRIMARY KEY(comment_id),
-FOREIGN KEY(author_id) REFERENCES Users(user_id),
-FOREIGN KEY(commit_id) REFERENCES Commits(commit_id),
-FOREIGN KEY(pr_id) REFERENCES Pull_requests(pr_id)); 
+FOREIGN KEY(author_id) REFERENCES Users(user_id) ON DELETE SET NULL,
+FOREIGN KEY(commit_id) REFERENCES Commits(commit_id) ON DELETE CASCADE,
+FOREIGN KEY(pr_id) REFERENCES Pull_requests(pr_id) ON DELETE CASCADE); 
 
 -- Inserting data values into each table --
 
@@ -208,3 +208,4 @@ SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repo
 --2
 SELECT org_id, COUNT(user_id) AS member_count FROM Membership GROUP BY org_id HAVING COUNT(user_id) > 1;
 -- Outputs IDs of organizations with more than one member. Shows total number of members in each organization as well.
+
