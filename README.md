@@ -21,4 +21,4 @@ The database consists of the following tables:
 | `Branches` | Named branches within a repository |
 | `Commits` | Individual code snapshots |
 | `Pull_Requests` | Proposals to merge one branch into another |
-| `Comment` | Weak entity for comments on pull requests or commits |
+| `Comments` | Weak entity for comments on pull requests or commits |
