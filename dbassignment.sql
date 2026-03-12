@@ -25,7 +25,7 @@ username VARCHAR(39) NOT NULL UNIQUE,
 email TEXT NOT NULL UNIQUE, 
 password TEXT, 
 bio TEXT, 
-location TEXT, 
+city TEXT, 
 status, 
 PRIMARY KEY(user_id),
 FOREIGN KEY(user_id) REFERENCES Accounts(account_id));
@@ -34,7 +34,7 @@ CREATE TABLE Organizations(
 org_id INTEGER, 
 name VARCHAR(39) NOT NULL UNIQUE, 
 bio TEXT, 
-location TEXT, 
+city TEXT, 
 PRIMARY KEY(org_id),
 FOREIGN KEY(org_id) REFERENCES Accounts(account_id));
 
@@ -122,16 +122,16 @@ INSERT INTO Accounts VALUES (7, 'organization');
 INSERT INTO Accounts VALUES (8, 'organization');
 
 -- Users (user_id matches account_id)
-INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL',    'active');
-INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', 'active');
-INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', 'active');
-INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   'active');
-INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  'suspended');
+INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden',    'active');
+INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam', 'active');
+INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam', 'active');
+INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht',   'active');
+INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag',  'suspended');
 
 -- Organizations (org_id matches account_id, starting from 6)
-INSERT INTO Organizations VALUES (6, 'promptshop', 'AI start up',  'Amsterdam, NL');
-INSERT INTO Organizations VALUES (7, 'leiden-uni', 'Leiden University', 'Leiden, NL');
-INSERT INTO Organizations VALUES (8, 'opendev',    'Open source org',   'Utrecht, NL');
+INSERT INTO Organizations VALUES (6, 'promptshop', 'AI start up',  'Amsterdam');
+INSERT INTO Organizations VALUES (7, 'leiden-uni', 'Leiden University', 'Leiden');
+INSERT INTO Organizations VALUES (8, 'opendev',    'Open source org',   'Utrecht');
 
 -- Membership
 INSERT INTO Membership VALUES (1, 'admin',  '2024-01-01', 1, 6);
@@ -208,4 +208,5 @@ SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repo
 --2
 SELECT org_id, COUNT(user_id) AS member_count FROM Membership GROUP BY org_id HAVING COUNT(user_id) > 1;
 -- Outputs IDs of organizations with more than one member. Shows total number of members in each organization as well.
+
 
