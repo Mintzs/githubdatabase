@@ -203,10 +203,32 @@ SELECT * FROM Comments;
 
 --1
 SELECT Users.username, Repositories.name AS repository_name FROM Users JOIN Repositories ON Users.user_id = Repositories.owner_user_id;
--- Outputs each user’s name and the repositories they own.
+-- Outputs each user's username that owns a repository and the repositories they own.
+-- Actual Output:
+-- username,	repository_name
+-- mintz,	promptshop-api
+-- janek,	ml-models
+-- ceco, data-pipeline
+-- ceco,	portfolio
 
 --2
 SELECT org_id, COUNT(user_id) AS member_count FROM Membership GROUP BY org_id HAVING COUNT(user_id) > 1;
 -- Outputs IDs of organizations with more than one member. Shows total number of members in each organization as well.
+-- Actual Output:
+-- org_id,	member_count
+-- 6,	2
+-- 7,	2
 
+
+--3 
+SELECT username FROM Users EXCEPT SELECT username FROM Users WHERE user_id = 3;
+--  Outputs all usernames except for 'ceco'.
+-- Actual Output:
+-- username
+-- janek
+-- mara
+-- mintz
+-- travis
+
+--4
 
