@@ -3,7 +3,6 @@
 
 DROP TABLE IF EXISTS Pull_Requests;
 DROP TABLE IF EXISTS Commits;
-DROP TABLE IF EXISTS Branches;
 DROP TABLE IF EXISTS Membership;
 DROP TABLE IF EXISTS Repositories;
 DROP TABLE IF EXISTS Organizations;
@@ -23,7 +22,8 @@ username VARCHAR(39) NOT NULL UNIQUE,
 email TEXT NOT NULL UNIQUE, 
 password TEXT, 
 bio TEXT, 
-location TEXT, 
+location TEXT,
+followers INTEGER DEFAULT 0,
 status, 
 PRIMARY KEY(user_id),
 FOREIGN KEY(user_id) REFERENCES Accounts(account_id));
@@ -57,34 +57,25 @@ PRIMARY KEY(repo_id),
 FOREIGN KEY(owner_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
 FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
 
-CREATE TABLE Branches(
-branch_id INTEGER,
-name TEXT NOT NULL,
-repo_id,
-PRIMARY KEY(branch_id),
-FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id) ON DELETE CASCADE);
-
 CREATE TABLE Commits(
 commit_id TEXT,
-branch_id,
 author_id,
+repo_id,
 message TEXT NOT NULL,
 timestamp,
 PRIMARY KEY(commit_id),
-FOREIGN KEY(branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
-FOREIGN KEY(author_id) REFERENCES Users(user_id) ON DELETE SET NULL);
+FOREIGN KEY(author_id) REFERENCES Users(user_id) ON DELETE SET NULL,
+FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id) ON DELETE CASCADE);
 
 CREATE TABLE Pull_requests(
 pr_id INTEGER,
+repo_id,
 title,
 description,
 status TEXT,
-source_branch_id,
-target_branch_id,
 creator_id,
 PRIMARY KEY(pr_id),
-FOREIGN KEY(source_branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
-FOREIGN KEY(target_branch_id) REFERENCES Branches(branch_id) ON DELETE CASCADE,
+FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id) ON DELETE CASCADE,
 FOREIGN KEY(creator_id) REFERENCES Users(user_id) ON DELETE SET NULL);
 
 -- Inserting data values into each table --
@@ -100,11 +91,11 @@ INSERT INTO Accounts VALUES (7, 'organization');
 INSERT INTO Accounts VALUES (8, 'organization');
 
 -- Users (user_id matches account_id)
-INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL',    'active');
-INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', 'active');
-INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', 'active');
-INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   'active');
-INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  'suspended');
+INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL', '100',    'active');
+INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', '67',     'active');
+INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', '69',     'active');
+INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   '10000',     'active');
+INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  '0',     'suspended');
 
 -- Organizations (org_id matches account_id, starting from 6)
 INSERT INTO Organizations VALUES (6, 'promptshop', 'AI start up',  'Amsterdam, NL');
@@ -126,13 +117,6 @@ INSERT INTO Repositories VALUES (4, 'opendev-core',   'Core open source library'
 INSERT INTO Repositories VALUES (5, 'data-pipeline',  'Data pipeline framework',  'private', 3, NULL);
 INSERT INTO Repositories VALUES (6, 'portfolio',  'Personal portfolio',  'public', 3, NULL);
 
--- Branches
-INSERT INTO Branches VALUES (1, 'main',           1);
-INSERT INTO Branches VALUES (2, 'feature/auth',   1);
-INSERT INTO Branches VALUES (3, 'main',           2);
-INSERT INTO Branches VALUES (4, 'feature/resnet', 2);
-INSERT INTO Branches VALUES (5, 'main',           3);
-
 -- Commits
 INSERT INTO Commits VALUES ('a1b2c3d4', 1, 1, 'Initial commit',        '2024-01-10T09:00:00');
 INSERT INTO Commits VALUES ('b2c3d4e5', 2, 1, 'Add auth module',       '2024-01-15T11:00:00');
@@ -140,14 +124,14 @@ INSERT INTO Commits VALUES ('c3d4e5f6', 2, 1, 'Fix auth bug',          '2024-01-
 INSERT INTO Commits VALUES ('d4e5f6g7', 3, 2, 'Add ML base model',     '2024-02-10T10:00:00');
 INSERT INTO Commits VALUES ('e5f6g7h8', 5, 3, 'University tools init', '2024-03-01T08:00:00');
 INSERT INTO Commits VALUES ('f6g7h8i9', 1, 2, 'Improve README',        '2024-01-25T16:00:00');
-INSERT INTO Commits VALUES ('g7h8i9j0', 4, 5, 'Add ResNet50 model',    '2024-04-01T13:00:00');
+INSERT INTO Commits VALUES ('g7h8i9j0', 4, 3, 'Add ResNet50 model',    '2024-04-01T13:00:00');
 
 -- Pull_Requests
-INSERT INTO Pull_Requests VALUES (1, 'Add authentication',     'Implement OAuth2 flow',          'merged', 2, 1, 1);
-INSERT INTO Pull_Requests VALUES (2, 'Fix auth edge case',     NULL,                             'open',   2, 1, 2);
-INSERT INTO Pull_Requests VALUES (3, 'Add ResNet model',       'Deep learning image classifier', 'merged', 4, 3, 2);
-INSERT INTO Pull_Requests VALUES (4, 'Improve data pipeline',  NULL,                             'open',   4, 3, 3);
-INSERT INTO Pull_Requests VALUES (5, 'Fix documentation typo', NULL,                             'closed', 2, 1, 4);
+INSERT INTO Pull_Requests VALUES (1, 1, 'Add authentication',     'Implement OAuth2 flow',          'merged', 1);
+INSERT INTO Pull_Requests VALUES (2, 1, 'Fix auth edge case',     NULL,                             'open',   2);
+INSERT INTO Pull_Requests VALUES (3, 2, 'Add ResNet model',       'Deep learning image classifier', 'merged', 2);
+INSERT INTO Pull_Requests VALUES (4, 3, 'Improve data pipeline',  NULL,                             'open',   3);
+INSERT INTO Pull_Requests VALUES (5, 4, 'Fix documentation typo', NULL,                             'closed', 4);
 
 
 -- View all tables --
@@ -157,7 +141,6 @@ SELECT * FROM Users;
 SELECT * FROM Organizations;
 SELECT * FROM Membership;
 SELECT * FROM Repositories;
-SELECT * FROM Branches;
 SELECT * FROM Commits;
 SELECT * FROM Pull_Requests;
 
@@ -194,3 +177,26 @@ SELECT username FROM Users EXCEPT SELECT username FROM Users WHERE user_id = 3;
 -- travis
 
 --4
+SELECT repo_id, name FROM Repositories 
+WHERE (SELECT COUNT(pr_id) FROM Pull_Requests WHERE Pull_Requests.repo_id = Repositories.repo_id AND Pull_Requests.status = 'open') >= 1;
+-- Outputs the repositories that have at least one unresolved pull requests.
+-- Actual Output:
+-- repo_id, name
+-- 1, promptshop-api
+-- 3, leiden-tools
+
+--5
+SELECT account_type, COUNT(account_id) * 100.0 / (SELECT COUNT(*) FROM Accounts) 
+AS percentage FROM Accounts GROUP BY account_type;
+-- Outputs the percentage of accounts that are either a user or an organization.
+-- Actual Output:
+-- account_type, percentage
+-- organization, 37.5
+-- user, 62.5
+
+--6
+SELECT name, bio FROM Organizations WHERE name LIKE '%AI%' OR bio LIKE '%AI%';
+-- Show all "AI-focused" organizations that mention AI in their name or bio
+-- Actual Output
+-- name, bio
+-- promptshop, AI start up
