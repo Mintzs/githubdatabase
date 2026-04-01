@@ -12,10 +12,16 @@ email TEXT NOT NULL UNIQUE,
 password TEXT, 
 bio TEXT, 
 location TEXT,
-followers INTEGER DEFAULT 0,
 status CHECK(status IN ('active', 'suspended')), 
 PRIMARY KEY(user_id),
 FOREIGN KEY(user_id) REFERENCES Accounts(account_id));
+
+CREATE TABLE Followers(
+user_id INTEGER,
+follower_id INTEGER,
+PRIMARY KEY(user_id, follower_id),
+FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
+FOREIGN KEY(follower_id) REFERENCES Users(user_id) ON DELETE CASCADE);
 
 CREATE TABLE Organizations(
 org_id INTEGER, 
@@ -81,11 +87,33 @@ INSERT INTO Accounts VALUES (7, 'organization');
 INSERT INTO Accounts VALUES (8, 'organization');
 
 -- Users (user_id matches account_id)
-INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL', '100',    'active');
-INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', '67',     'active');
-INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', '69',     'active');
-INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   '10000',     'active');
-INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  '0',     'suspended');
+INSERT INTO Users VALUES (1, 'mintz',  'mintz@email.com',  'hashed_pw1', 'AI developer',    'Leiden, NL',    'active');
+INSERT INTO Users VALUES (2, 'janek',  'janek@email.com',  'hashed_pw2', 'Full stack dev',  'Amsterdam, NL', 'active');
+INSERT INTO Users VALUES (3, 'ceco',    'ceco@email.com',    'hashed_pw3', 'Data scientist',  'Rotterdam, NL', 'active');
+INSERT INTO Users VALUES (4, 'travis',  'travis@email.com',  'hashed_pw4', 'DevOps engineer', 'Utrecht, NL',   'active');
+INSERT INTO Users VALUES (5, 'mara',   'mara@email.com',   'hashed_pw5', 'Backend dev',     'Den Haag, NL',  'suspended');
+
+-- Followers (user_id matches account_id)
+INSERT INTO Followers VALUES (1, 2);
+INSERT INTO Followers VALUES (1, 3);
+INSERT INTO Followers VALUES (1, 4);
+INSERT INTO Followers VALUES (1, 5);
+INSERT INTO Followers VALUES (2, 1);
+INSERT INTO Followers VALUES (2, 3);
+INSERT INTO Followers VALUES (2, 4);
+INSERT INTO Followers VALUES (2, 5);
+INSERT INTO Followers VALUES (3, 1);
+INSERT INTO Followers VALUES (3, 2);
+INSERT INTO Followers VALUES (3, 4);
+INSERT INTO Followers VALUES (3, 5);
+INSERT INTO Followers VALUES (4, 1);
+INSERT INTO Followers VALUES (4, 2);
+INSERT INTO Followers VALUES (4, 3);
+INSERT INTO Followers VALUES (4, 5);
+INSERT INTO Followers VALUES (5, 1);
+INSERT INTO Followers VALUES (5, 2);
+INSERT INTO Followers VALUES (5, 3);
+INSERT INTO Followers VALUES (5, 4);
 
 -- Organizations (org_id matches account_id, starting from 6)
 INSERT INTO Organizations VALUES (6, 'promptshop', 'AI start up',  'Amsterdam, NL');
@@ -128,6 +156,7 @@ INSERT INTO Pull_Requests VALUES (5, 4, 'Fix documentation typo', NULL,         
 
 SELECT * FROM Accounts;
 SELECT * FROM Users;
+SELECT * FROM Followers;
 SELECT * FROM Organizations;
 SELECT * FROM Membership;
 SELECT * FROM Repositories;
