@@ -1,14 +1,3 @@
-
--- "DROP TABLE" commands to rerun SQL queries in reverse order of table creation to account for table dependencies --
-
-DROP TABLE IF EXISTS Pull_Requests;
-DROP TABLE IF EXISTS Commits;
-DROP TABLE IF EXISTS Membership;
-DROP TABLE IF EXISTS Repositories;
-DROP TABLE IF EXISTS Organizations;
-DROP TABLE IF EXISTS Users;
-DROP TABLE IF EXISTS Accounts;
-
 -- Creating Tables & Entities --
 
 CREATE TABLE Accounts(
@@ -24,7 +13,7 @@ password TEXT,
 bio TEXT, 
 location TEXT,
 followers INTEGER DEFAULT 0,
-status, 
+status CHECK(status IN ('active', 'suspended')), 
 PRIMARY KEY(user_id),
 FOREIGN KEY(user_id) REFERENCES Accounts(account_id));
 
@@ -50,12 +39,13 @@ CREATE TABLE Repositories(
 repo_id INTEGER,
 name TEXT NOT NULL,
 description TEXT,
-visibility TEXT NOT NULL,
+visibility TEXT NOT NULL CHECK(visibility IN ('public', 'private')),
 owner_user_id,
 owner_org_id,
 PRIMARY KEY(repo_id),
 FOREIGN KEY(owner_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
-FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
+FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE,
+CHECK(owner_user_id IS NOT NULL OR owner_org_id IS NOT NULL));
 
 CREATE TABLE Commits(
 commit_id TEXT,
@@ -72,7 +62,7 @@ pr_id INTEGER,
 repo_id,
 title,
 description,
-status TEXT,
+status TEXT CHECK(status IN ('open', 'closed', 'merged')),
 creator_id,
 PRIMARY KEY(pr_id),
 FOREIGN KEY(repo_id) REFERENCES Repositories(repo_id) ON DELETE CASCADE,
