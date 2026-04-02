@@ -51,7 +51,7 @@ owner_org_id,
 PRIMARY KEY(repo_id),
 FOREIGN KEY(owner_user_id) REFERENCES Users(user_id) ON DELETE CASCADE,
 FOREIGN KEY(owner_org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE,
-CHECK(owner_user_id IS NOT NULL OR owner_org_id IS NOT NULL));
+CHECK((owner_user_id IS NULL) != (owner_org_id IS NULL)));
 
 CREATE TABLE Commits(
 commit_id TEXT,
