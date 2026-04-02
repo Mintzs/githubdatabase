@@ -39,7 +39,8 @@ user_id,
 org_id,
 PRIMARY KEY(membership_id),
 FOREIGN KEY(user_id) REFERENCES Users(user_id) ON DELETE CASCADE, 
-FOREIGN KEY(org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE);
+FOREIGN KEY(org_id) REFERENCES Organizations(org_id) ON DELETE CASCADE,
+UNIQUE(user_id, org_id)); -- A user can't be part of the same organization more than once
 
 CREATE TABLE Repositories(
 repo_id INTEGER,
@@ -124,7 +125,7 @@ INSERT INTO Organizations VALUES (8, 'opendev',    'Open source org',   'Utrecht
 INSERT INTO Membership VALUES (1, 'admin',  '2024-01-01', 1, 6);
 INSERT INTO Membership VALUES (2, 'member', '2024-02-01', 2, 6);
 INSERT INTO Membership VALUES (3, 'admin',  '2024-03-01', 3, 7);
-INSERT INTO Membership VALUES (4, 'member', '2024-04-01', 4, 7);
+INSERT INTO Membership VALUES (4, 'member', '2024-04-01', 3, 8);
 INSERT INTO Membership VALUES (5, 'member', '2024-05-01', 5, 8);
 
 -- Repositories
